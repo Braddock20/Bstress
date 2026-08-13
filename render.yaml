@@ -10,7 +10,7 @@ services:
       - key: API_KEY
         sync: false
       - key: FILE_SIZE_BYTES
-        value: "524288000"
+        value: "1932735283"
       - key: TG_BOT_TOKEN
         sync: false
       - key: TG_CHAT_ID
