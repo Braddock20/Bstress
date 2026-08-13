@@ -48,9 +48,11 @@ In Render dashboard:
 - `API_KEY` — Your bucket API key
 
 **Optional:**
-- `FILE_SIZE_BYTES` — Size per file in bytes (default: 524288000 = 500MB)
+- `FILE_SIZE_BYTES` — Size per file in bytes (default: 1932735283 = 1.8GB)
   - 100MB = 104857600
+  - 500MB = 524288000
   - 1GB = 1073741824
+  - 1.8GB = 1932735283
   - 5GB = 5368709120
 - `TG_BOT_TOKEN` — Telegram bot token (for failure alerts)
 - `TG_CHAT_ID` — Your Telegram chat ID (for alerts)
@@ -88,7 +90,7 @@ Returns:
   "last_upload": {
     "file": "testfile_1723488913_290.bin",
     "status": 200,
-    "elapsed_s": 12.1,
+    "elapsed_s": 43.5,
     "speed_gbps": 0.04,
     "timestamp": "2026-08-13T14:15:25.123456"
   }
@@ -117,19 +119,19 @@ Returns:
 
 **Render logs tab** shows every upload in real-time:
 ```
-[289] ✅ testfile_1723488913_289.bin | 200 | 0.50GB | 12.1s | 0.04GB/s | Total: 144.50TB
-[290] ✅ testfile_1723488925_290.bin | 200 | 0.50GB | 12.3s | 0.04GB/s | Total: 145.00TB
-[291] ✅ testfile_1723488937_291.bin | 200 | 0.50GB | 12.0s | 0.04GB/s | Total: 145.50TB
+[289] ✅ testfile_1723488913_289.bin | 200 | 1.80GB | 43.5s | 0.04GB/s | Total: 520.20TB
+[290] ✅ testfile_1723488925_290.bin | 200 | 1.80GB | 42.9s | 0.04GB/s | Total: 522.00TB
+[291] ✅ testfile_1723488937_291.bin | 200 | 1.80GB | 43.2s | 0.04GB/s | Total: 523.80TB
 ```
 
 ## Expected Throughput
 
 Depends on your internet, bucket bandwidth, and file size:
 
-**Example (500MB files):**
-- Local fiber (1Gbps): ~100 files/hour → 50GB/hour → 1.2TB/day
-- Standard residential (100Mbps): ~10 files/hour → 5GB/hour → 120GB/day
-- Render egress: ~50-200 MB/s typical → 1-4 files/hour → 0.5-2GB/hour
+**Example (1.8GB files):**
+- Local fiber (1Gbps): ~30 files/hour → 54GB/hour → 1.3TB/day
+- Standard residential (100Mbps): ~3 files/hour → 5.4GB/hour → 130GB/day
+- Render egress: ~50-200 MB/s typical → 0.5-1.5 files/hour → 1-3GB/hour
 
 **To increase throughput:**
 - Reduce `FILE_SIZE_BYTES` (smaller files = more frequent uploads)
