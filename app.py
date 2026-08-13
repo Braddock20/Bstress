@@ -9,7 +9,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 BUCKET_URL = os.environ["BUCKET_URL"]
-API_KEY = os.environ["API_KEY"]
+API_KEY = os.environ.get("API_KEY")  # optional
 FILE_SIZE = int(os.environ.get("FILE_SIZE_BYTES", 500 * 1024 * 1024))  # default 500MB
 CHUNK_SIZE = 1024 * 1024  # 1MB buffer
 
@@ -53,9 +53,10 @@ def data_generator(total_size):
 def continuous_push():
     """Background thread that continuously pushes files forever"""
     headers = {
-        "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/octet-stream"
     }
+    if API_KEY:
+        headers["Authorization"] = f"Bearer {API_KEY}"
     
     for i in itertools.count():
         if not stats["running"]:
