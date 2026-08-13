@@ -1,0 +1,17 @@
+services:
+  - type: worker
+    name: bucket-stress-test
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python worker.py"
+    envVars:
+      - key: BUCKET_URL
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: FILE_SIZE_BYTES
+        value: "524288000"
+      - key: TG_BOT_TOKEN
+        sync: false
+      - key: TG_CHAT_ID
+        sync: false
