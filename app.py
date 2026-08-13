@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 BUCKET_URL = os.environ["BUCKET_URL"]
 API_KEY = os.environ.get("API_KEY")  # optional
-FILE_SIZE = int(os.environ.get("FILE_SIZE_BYTES", 500 * 1024 * 1024))  # default 500MB
+FILE_SIZE = int(os.environ.get("FILE_SIZE_BYTES", 1932735283))  # default 1.8GB
 CHUNK_SIZE = 1024 * 1024  # 1MB buffer
 
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN")
