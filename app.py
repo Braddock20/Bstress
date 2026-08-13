@@ -67,7 +67,7 @@ def continuous_push():
         
         try:
             resp = requests.put(
-                f"{BUCKET_URL}/{filename}",
+                f"{BUCKET_URL.rstrip('/')}/files/{requests.utils.quote(filename, safe='')}",
                 data=data_generator(FILE_SIZE),
                 headers=headers,
                 timeout=120
@@ -75,9 +75,7 @@ def continuous_push():
             elapsed = time.time() - start
             speed_gbps = (FILE_SIZE / 1024 / 1024 / 1024) / elapsed if elapsed > 0 else 0
             
-            # Update stats
-            stats["uploads_completed"] += 1
-            stats["total_bytes_uploaded"] += FILE_SIZE
+            response_preview = resp.text[:500]
             stats["last_upload"] = {
                 "file": filename,
                 "status": resp.status_code,
@@ -85,13 +83,20 @@ def continuous_push():
                 "speed_gbps": round(speed_gbps, 2),
                 "timestamp": datetime.now().isoformat()
             }
-            
-            log_msg = f"[{i}] ✅ {filename} | {resp.status_code} | {FILE_SIZE/1e9:.2f}GB | {elapsed:.1f}s | {speed_gbps:.2f}GB/s | Total: {stats['total_bytes_uploaded']/1e12:.2f}TB"
-            print(log_msg, flush=True)
-            
-            if resp.status_code >= 400:
+
+            if 200 <= resp.status_code < 300:
+                stats["uploads_completed"] += 1
+                stats["total_bytes_uploaded"] += FILE_SIZE
+                stats["last_upload"]["ok"] = True
+                log_msg = f"[{i}] ✅ {filename} | {resp.status_code} | {FILE_SIZE/1e9:.2f}GB | {elapsed:.1f}s | {speed_gbps:.2f}GB/s | Total: {stats['total_bytes_uploaded']/1e12:.2f}TB"
+                print(log_msg, flush=True)
+            else:
                 stats["errors"] += 1
-                notify(f"⚠️ Upload {i} failed: {filename} | status {resp.status_code}")
+                stats["last_upload"]["ok"] = False
+                stats["last_upload"]["response"] = response_preview
+                log_msg = f"[{i}] ❌ {filename} | {resp.status_code} | {response_preview!r} | {elapsed:.1f}s"
+                print(log_msg, flush=True)
+                notify(f"⚠️ Upload {i} failed: {filename} | status {resp.status_code} | {response_preview[:180]}")
                 
         except Exception as e:
             stats["errors"] += 1
